@@ -35,8 +35,7 @@ const reporter = (context, options = {}) => {
             // 文末がスペースである場合
             if (/\s/.test(lastChar)) {
                 report(lastNode, new RuleError(`文末が"${periodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
-                    index: lastIndex,
-                    fix: fix
+                    index: lastIndex
                 }));
                 return
             }
