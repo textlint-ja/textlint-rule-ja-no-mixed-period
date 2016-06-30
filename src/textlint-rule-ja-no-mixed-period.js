@@ -23,6 +23,7 @@ const reporter = (context, options = {}) => {
                 return;
             }
             const lastStrText = getSource(lastNode);
+            // 日本語が含まれていない文章は無視する
             if (!japaneseRegExp.test(lastStrText)) {
                 return;
             }
@@ -31,6 +32,7 @@ const reporter = (context, options = {}) => {
             if (lastChar === undefined) {
                 return;
             }
+            // 末尾の"文字"が句点以外で末尾に使われる文字であるときは無視する
             // 例外: 感嘆符
             // 例外: 「」 () （）『』
             // http://ncode.syosetu.com/n8977bb/12/
@@ -41,7 +43,8 @@ const reporter = (context, options = {}) => {
             if (lastChar === periodMark) {
                 return;
             }
-
+            // "." であるなら "。"に変換
+            // そうでない場合は末尾に"。"を追加する
             let fix = null;
             if (defaultPeriodMark.test(lastChar)) {
                 fix = fixer.replaceTextRange([lastIndex, lastIndex + 1], periodMark);
