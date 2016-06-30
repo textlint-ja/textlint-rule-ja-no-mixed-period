@@ -9,6 +9,7 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         "1行目  空白はあるけど末尾に句点はある。",
         // 例外: 感嘆符などが末尾にある場合は問題なし
         "末尾に句点はある!",
+        "english only",
         // 例外のNode type
         `- 箇条書きは無視される`,
         `![画像の説明も無視される](img/img.png)`,
@@ -61,8 +62,8 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         },
         // options
         {
-            text: "This is error",
-            output: "This is error.",
+            text: "これはダメ",
+            output: "これはダメ.",
             options: {
                 periodMark: "."
             },
@@ -70,7 +71,7 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
                 {
                     message: `文末が"."で終わっていません。`,
                     line: 1,
-                    column: 13
+                    column: 5
                 }
             ]
         }

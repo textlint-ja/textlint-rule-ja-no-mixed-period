@@ -1,6 +1,7 @@
 // LICENSE : MIT
 "use strict";
 const RuleHelper = require("textlint-rule-helper").RuleHelper;
+const japaneseRegExp = /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
 const exceptionMarkRegExp = /[!?！？\)）」 』]/;
 const defaultPeriodMark = /[。\.]/;
 const defaultOptions = {
@@ -22,6 +23,9 @@ const reporter = (context, options = {}) => {
                 return;
             }
             const lastStrText = getSource(lastNode);
+            if (!japaneseRegExp.test(lastStrText)) {
+                return;
+            }
             const lastIndex = lastStrText.length - 1;
             const lastChar = lastStrText[lastIndex];
             if (lastChar === undefined) {
