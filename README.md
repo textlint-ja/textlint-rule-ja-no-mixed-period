@@ -49,15 +49,24 @@ textlint --rule ja-no-mixed-period README.md
 }
 ```
 
-## 参考情報
-
-- [句点 - Wikipedia](https://ja.wikipedia.org/wiki/%E5%8F%A5%E7%82%B9 "句点 - Wikipedia")
-- [小説家になろう Hint&Tips - 区切り符号について](http://ncode.syosetu.com/n8977bb/12/ "小説家になろう Hint&amp;Tips - 区切り符号について")
+## 例外
 
 末尾に`。`がない場合でも、代わりに感嘆符や疑問符、括弧などがある場合は例外として扱います。
 
 > これは問題ない文章ですか！？
 > 「会話文は括弧で括れば末尾に。がなくても問題ありません」
+
+箇条書きの中はチェックせず無視します。
+
+```
+- これは問題ないです
+- これも問題ないです
+```
+
+## 参考情報
+
+- [句点 - Wikipedia](https://ja.wikipedia.org/wiki/%E5%8F%A5%E7%82%B9 "句点 - Wikipedia")
+- [小説家になろう Hint&Tips - 区切り符号について](http://ncode.syosetu.com/n8977bb/12/ "小説家になろう Hint&amp;Tips - 区切り符号について")
 
 ## Changelog
 

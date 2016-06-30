@@ -1,5 +1,6 @@
 // LICENSE : MIT
 "use strict";
+const RuleHelper = require("textlint-rule-helper").RuleHelper;
 const exceptionMarkRegExp = /[!?！？\)）」 』]/;
 const defaultPeriodMark = /[。\.]/;
 const defaultOptions = {
@@ -8,9 +9,14 @@ const defaultOptions = {
 };
 const reporter = (context, options = {}) => {
     const {Syntax, RuleError, report, fixer, getSource} = context;
+    const helper = new RuleHelper(context);
     const periodMark = options.periodMark || defaultOptions.periodMark;
+    const ignoredNodeTypes = [Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis];
     return {
         [Syntax.Paragraph](node){
+            if (helper.isChildNode(node, ignoredNodeTypes)) {
+                return;
+            }
             const lastNode = node.children[node.children.length - 1];
             if (lastNode === undefined || lastNode.type !== Syntax.Str) {
                 return;
