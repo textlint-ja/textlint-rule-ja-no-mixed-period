@@ -2,14 +2,14 @@
   "name": "textlint-rule-ja-no-mixed-period",
   "repository": {
     "type": "git",
-    "url": "https://github.com/azu/textlint-rule-ja-no-mixed-period.git"
+    "url": "https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period.git"
   },
   "author": "azu",
   "email": "azuciao@gmail.com",
-  "homepage": "https://github.com/azu/textlint-rule-ja-no-mixed-period",
+  "homepage": "https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/azu/textlint-rule-ja-no-mixed-period/issues"
+    "url": "https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period/issues"
   },
   "files": [
     "src/",

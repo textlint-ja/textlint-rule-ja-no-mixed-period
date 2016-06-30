@@ -1,4 +1,4 @@
-# textlint-rule-ja-no-mixed-period
+# textlint-rule-ja-no-mixed-period [![Build Status](https://travis-ci.org/textlint-ja/textlint-rule-ja-no-mixed-period.svg?branch=master)](https://travis-ci.org/textlint-ja/textlint-rule-ja-no-mixed-period)
 
 文末の句点(。)の統一 OR 抜けをチェックするtextlintルール
 
@@ -61,7 +61,7 @@ textlint --rule ja-no-mixed-period README.md
 
 ## Changelog
 
-See [Releases page](https://github.com/azu/textlint-rule-ja-no-mixed-period/releases).
+See [Releases page](https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period/releases).
 
 ## Running tests
 
@@ -73,7 +73,7 @@ Install devDependencies and Run `npm test`:
 
 Pull requests and stars are always welcome.
 
-For bugs and feature requests, [please create an issue](https://github.com/azu/textlint-rule-ja-no-mixed-period/issues).
+For bugs and feature requests, [please create an issue](https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period/issues).
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
