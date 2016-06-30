@@ -2,7 +2,7 @@
 "use strict";
 const RuleHelper = require("textlint-rule-helper").RuleHelper;
 const japaneseRegExp = /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
-const exceptionMarkRegExp = /[!?！？\)）」 』]/;
+const exceptionMarkRegExp = /[!?！？\)）」』]/;
 const defaultPeriodMark = /[。\.]/;
 const defaultOptions = {
     // 優先する句点文字
@@ -31,6 +31,14 @@ const reporter = (context, options = {}) => {
             const lastChar = lastStrText[lastIndex];
             if (lastChar === undefined) {
                 return;
+            }
+            // 文末がスペースである場合
+            if (/\s/.test(lastChar)) {
+                report(lastNode, new RuleError(`文末が"${periodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
+                    index: lastIndex,
+                    fix: fix
+                }));
+                return
             }
             // 末尾の"文字"が句点以外で末尾に使われる文字であるときは無視する
             // 例外: 感嘆符

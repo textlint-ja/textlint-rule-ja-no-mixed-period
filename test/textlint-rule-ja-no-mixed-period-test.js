@@ -48,6 +48,16 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
                 }
             ]
         },
+        {
+            text: "末尾にスペースがある。 ",
+            errors: [
+                {
+                    message: `文末が"。"で終わっていません。末尾に不要なスペースがあります。`,
+                    line: 1,
+                    column: 12
+                }
+            ]
+        },
         // multiple hit items in a line
         {
             text: "これは句点がありません、これは句点がありません",
