@@ -17,6 +17,12 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         `[リンクリファレンスも][]`,
         `__強調表示も同じく__`,
         `> 引用も無視される`,
+        {
+          text: "絵文字が末尾にある。😆",
+          options: {
+            allowEmojiAtEnd: true
+          },
+        },
     ],
     invalid: [
         // single match
@@ -84,6 +90,17 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
                     column: 5
                 }
             ]
-        }
+        },
+        // emojis are not allowed by default
+        {
+            text: "絵文字が末尾にある。😆",
+            errors: [
+                {
+                    message: `文末が"。"で終わっていません。`,
+                    line: 1,
+                    column: 11
+                }
+            ]
+        },
     ]
 });

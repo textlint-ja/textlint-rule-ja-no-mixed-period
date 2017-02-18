@@ -40,6 +40,10 @@ textlint --rule ja-no-mixed-period README.md
     - 文末に使用する句点文字
     - デフォルト: "。"
 
+- `allowEmojiAtEnd`(bool):
+    - 絵文字を末尾に置くことを許可するかどうか
+    - デフォルト: false
+
 ```json
 {
     "rules": {
