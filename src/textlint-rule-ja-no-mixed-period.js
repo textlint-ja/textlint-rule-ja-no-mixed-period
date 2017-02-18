@@ -1,17 +1,21 @@
 // LICENSE : MIT
 "use strict";
 const RuleHelper = require("textlint-rule-helper").RuleHelper;
+const emojiRegExp = require("emoji-regex")();
 const japaneseRegExp = /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
 const exceptionMarkRegExp = /[!?！？\)）」』]/;
 const defaultPeriodMark = /[。\.]/;
 const defaultOptions = {
     // 優先する句点文字
-    periodMark: "。"
+    periodMark: "。",
+    // 末尾に絵文字を置くことを許可するか
+    allowEmojiAtEnd: false
 };
 const reporter = (context, options = {}) => {
     const {Syntax, RuleError, report, fixer, getSource} = context;
     const helper = new RuleHelper(context);
     const periodMark = options.periodMark || defaultOptions.periodMark;
+    const allowEmojiAtEnd = options.allowEmojiAtEnd !== undefined ? options.allowEmojiAtEnd : defaultOptions.allowEmojiAtEnd;
     const ignoredNodeTypes = [Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis];
     return {
         [Syntax.Paragraph](node){
@@ -27,8 +31,10 @@ const reporter = (context, options = {}) => {
             if (!japaneseRegExp.test(lastStrText)) {
                 return;
             }
-            const lastIndex = lastStrText.length - 1;
-            const lastChar = lastStrText[lastIndex];
+            // サロゲートペアを考慮した文字列長・文字アクセス
+            const characters = [...lastStrText];
+            const lastIndex = characters.length - 1;
+            const lastChar = characters[lastIndex];
             if (lastChar === undefined) {
                 return;
             }
@@ -46,6 +52,9 @@ const reporter = (context, options = {}) => {
             // http://ncode.syosetu.com/n8977bb/12/
             // https://ja.wikipedia.org/wiki/%E7%B5%82%E6%AD%A2%E7%AC%A6
             if (exceptionMarkRegExp.test(lastChar)) {
+                return;
+            }
+            if (allowEmojiAtEnd && emojiRegExp.test(lastChar)) {
                 return;
             }
             if (lastChar === periodMark) {
