@@ -15,7 +15,7 @@ const reporter = (context, options = {}) => {
     const {Syntax, RuleError, report, fixer, getSource} = context;
     const helper = new RuleHelper(context);
     const periodMark = options.periodMark || defaultOptions.periodMark;
-    const allowEmojiAtEnd = options.allowEmojiAtEnd || defaultOptions.allowEmojiAtEnd;
+    const allowEmojiAtEnd = options.allowEmojiAtEnd !== undefined ? options.allowEmojiAtEnd : defaultOptions.allowEmojiAtEnd;
     const ignoredNodeTypes = [Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis];
     return {
         [Syntax.Paragraph](node){
