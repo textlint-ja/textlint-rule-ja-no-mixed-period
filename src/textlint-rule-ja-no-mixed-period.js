@@ -32,8 +32,9 @@ const reporter = (context, options = {}) => {
                 return;
             }
             // サロゲートペアを考慮した文字列長・文字アクセス
-            const lastIndex = [...lastStrText].length - 1;
-            const lastChar = [...lastStrText][lastIndex];
+            const characters = [...lastStrText];
+            const lastIndex = characters.length - 1;
+            const lastChar = characters[lastIndex];
             if (lastChar === undefined) {
                 return;
             }
