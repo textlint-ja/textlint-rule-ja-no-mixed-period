@@ -42,7 +42,7 @@
     "textlint-tester": "^2.0.0"
   },
   "dependencies": {
-    "emoji-regex": "^6.1.0",
+    "check-ends-with-period": "^1.0.1",
     "textlint-rule-helper": "^2.0.0"
   }
 }

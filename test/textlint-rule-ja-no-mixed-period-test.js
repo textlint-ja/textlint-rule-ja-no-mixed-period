@@ -8,6 +8,7 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         "1行目。  \nHard Breakを入れるパターン。",
         "1行目  空白はあるけど末尾に句点はある。",
         // 例外: 感嘆符などが末尾にある場合は問題なし
+        "「これはセリフ」",
         "末尾に句点はある!",
         "english only",
         // 例外のNode type
@@ -18,17 +19,26 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         `__強調表示も同じく__`,
         `> 引用も無視される`,
         {
-          text: "絵文字が末尾にある。😆",
-          options: {
-            allowEmojiAtEnd: true
-          },
+            text: "絵文字が末尾にある。😆",
+            options: {
+                allowEmojiAtEnd: true
+            },
         },
+        {
+            text: "これはOK",
+            options: {
+                allowPeriodMarks: ["OK"]
+            },
+        }
     ],
     invalid: [
         // single match
         {
             text: "これは句点がありません",
             output: "これは句点がありません。",
+            options: {
+                forceAppendPeriod: true
+            },
             errors: [
                 {
                     message: `文末が"。"で終わっていません。`,
@@ -41,6 +51,9 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         {
             text: "これは句点がありません\n\nこれは句点がありません",
             output: "これは句点がありません。\n\nこれは句点がありません。",
+            options: {
+                forceAppendPeriod: true
+            },
             errors: [
                 {
                     message: `文末が"。"で終わっていません。`,
@@ -56,11 +69,23 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         },
         {
             text: "末尾にスペースがある。 ",
+            output: "末尾にスペースがある。",
             errors: [
                 {
                     message: `文末が"。"で終わっていません。末尾に不要なスペースがあります。`,
                     line: 1,
-                    column: 12
+                    column: 12 // space
+                }
+            ]
+        },
+        {
+            text: "末尾にスペースがある。           ",
+            output: "末尾にスペースがある。",
+            errors: [
+                {
+                    message: `文末が"。"で終わっていません。末尾に不要なスペースがあります。`,
+                    line: 1,
+                    column: 12 // space の開始位置
                 }
             ]
         },
@@ -68,6 +93,9 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
         {
             text: "これは句点がありません、これは句点がありません",
             output: "これは句点がありません、これは句点がありません。",
+            options: {
+                forceAppendPeriod: true
+            },
             errors: [
                 {
                     message: `文末が"。"で終わっていません。`,
@@ -81,7 +109,8 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
             text: "これはダメ",
             output: "これはダメ.",
             options: {
-                periodMark: "."
+                periodMark: ".",
+                forceAppendPeriod: true
             },
             errors: [
                 {
