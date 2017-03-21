@@ -29,6 +29,16 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
             options: {
                 allowPeriodMarks: ["OK"]
             },
+        },
+        {
+            text: `次のコード:
+
+    code block
+
+`,
+            options: {
+                allowPeriodMarks: [":"]
+            },
         }
     ],
     invalid: [
