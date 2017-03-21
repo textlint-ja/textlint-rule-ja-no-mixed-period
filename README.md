@@ -34,21 +34,55 @@ Via CLI
 textlint --rule ja-no-mixed-period README.md
 ```
 
+## Examples
+
+**OK**:
+
+```
+これは問題ないです。
+末尾に感嘆符はある!
+「これはセリフ」
+english only
+- 箇条書きは無視される
+```
+
+**NG**:
+
+```
+これは句点がありません
+末尾にスペースがある。           
+絵文字が末尾にある。😆
+```
+
 ## Options
 
-- `periodMark`(string):
+- `periodMark`: `string`:
     - 文末に使用する句点文字
     - デフォルト: "。"
-
+- `allowPeriodMarks`: `string[]`
+    - 句点文字として許可する文字列の配列
+    - 例外として許可したい文字列を設定する
+    - `periodMark`に指定したものは自動的に許可リストに加わる
+    - デフォルトは空 `[]`
 - `allowEmojiAtEnd`(bool):
     - 絵文字を末尾に置くことを許可するかどうか
+    - デフォルト: false
+- `forceAppendPeriod`: `boolean`
+    - 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
     - デフォルト: false
 
 ```json
 {
     "rules": {
         "ja-no-mixed-period": {
-            "periodMark": "。"
+             // 優先する句点文字
+             "periodMark": "。",
+             // 句点文字として許可する文字列の配列
+             "allowPeriodMarks": [],
+             // 末尾に絵文字を置くことを許可するか
+             "allowEmojiAtEnd": false,
+             // 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
+             "forceAppendPeriod": false
         }
     }
 }

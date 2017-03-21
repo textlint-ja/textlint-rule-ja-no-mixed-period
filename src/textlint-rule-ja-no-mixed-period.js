@@ -1,22 +1,44 @@
 // LICENSE : MIT
 "use strict";
 const RuleHelper = require("textlint-rule-helper").RuleHelper;
-const emojiRegExp = require("emoji-regex")();
 const japaneseRegExp = /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
-const exceptionMarkRegExp = /[!?！？\)）」』]/;
-const defaultPeriodMark = /[。\.]/;
+/***
+ * 典型的な句点のパターン
+ * これは`periodMark`と交換しても違和感がないものを登録
+ * @type {RegExp}
+ */
+const classicPeriodMarkPattern = /[。\.]/;
+const checkEndsWithPeriod = require("check-ends-with-period");
 const defaultOptions = {
     // 優先する句点文字
     periodMark: "。",
+    // 句点文字として許可する文字列の配列
+    // 例外として許可したい文字列を設定する
+    // `periodMark`に指定したものは自動的に許可リストに加わる
+    allowPeriodMarks: [],
     // 末尾に絵文字を置くことを許可するか
-    allowEmojiAtEnd: false
+    allowEmojiAtEnd: false,
+    // 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
+    // デフォルトでは自動的に追加しない
+    forceAppendPeriod: false
 };
 const reporter = (context, options = {}) => {
-    const {Syntax, RuleError, report, fixer, getSource} = context;
+    const { Syntax, RuleError, report, fixer, getSource } = context;
     const helper = new RuleHelper(context);
-    const periodMark = options.periodMark || defaultOptions.periodMark;
-    const allowEmojiAtEnd = options.allowEmojiAtEnd !== undefined ? options.allowEmojiAtEnd : defaultOptions.allowEmojiAtEnd;
-    const ignoredNodeTypes = [Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis];
+    // 優先する句点記号
+    const preferPeriodMark = options.periodMark || defaultOptions.periodMark;
+    // 優先する句点記号は常に句点として許可される
+    const allowPeriodMarks = (options.allowPeriodMarks || defaultOptions.allowPeriodMarks).concat(preferPeriodMark);
+    const allowEmojiAtEnd = options.allowEmojiAtEnd !== undefined
+        ? options.allowEmojiAtEnd
+        : defaultOptions.allowEmojiAtEnd;
+    const forceAppendPeriod = options.forceAppendPeriod !== undefined
+        ? options.forceAppendPeriod
+        : defaultOptions.forceAppendPeriod;
+
+    const ignoredNodeTypes = [
+        Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis
+    ];
     return {
         [Syntax.Paragraph](node){
             if (helper.isChildNode(node, ignoredNodeTypes)) {
@@ -27,52 +49,50 @@ const reporter = (context, options = {}) => {
                 return;
             }
             const lastStrText = getSource(lastNode);
+            if (lastStrText.length === 0) {
+                return;
+            }
             // 日本語が含まれていない文章は無視する
             if (!japaneseRegExp.test(lastStrText)) {
                 return;
             }
-            // サロゲートペアを考慮した文字列長・文字アクセス
-            const characters = [...lastStrText];
-            const lastIndex = characters.length - 1;
-            const lastChar = characters[lastIndex];
-            if (lastChar === undefined) {
+            const { valid, periodMark, index } = checkEndsWithPeriod(lastStrText, {
+                periodMarks: allowPeriodMarks,
+                allowEmoji: allowEmojiAtEnd
+            });
+            // 問題が無い場合は何もしない
+            if (valid) {
                 return;
             }
-            // 文末がスペースである場合
-            // TODO: fixに対応したい
-            if (/\s/.test(lastChar)) {
-                report(lastNode, new RuleError(`文末が"${periodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
-                    index: lastIndex
+            // 文末がスペースである場合はスペースを削除する
+            if (/\s/.test(periodMark)) {
+                report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
+                    index,
+                    fix: fixer.replaceTextRange([index, index + periodMark.length], "")
                 }));
                 return
             }
-            // 末尾の"文字"が句点以外で末尾に使われる文字であるときは無視する
-            // 例外: 感嘆符
-            // 例外: 「」 () （）『』
-            // http://ncode.syosetu.com/n8977bb/12/
-            // https://ja.wikipedia.org/wiki/%E7%B5%82%E6%AD%A2%E7%AC%A6
-            if (exceptionMarkRegExp.test(lastChar)) {
-                return;
-            }
-            if (allowEmojiAtEnd && emojiRegExp.test(lastChar)) {
-                return;
-            }
-            if (lastChar === periodMark) {
-                return;
-            }
-            // "." であるなら "。"に変換
-            // そうでない場合は末尾に"。"を追加する
-            let fix = null;
-            if (defaultPeriodMark.test(lastChar)) {
-                fix = fixer.replaceTextRange([lastIndex, lastIndex + 1], periodMark);
+            // 典型的なパターンは自動的に`preferPeriodMark`に置き換える
+            // 例) "." であるなら "。"に変換
+            if (classicPeriodMarkPattern.test(periodMark)) {
+                report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                    index: index,
+                    fix: fixer.replaceTextRange([index, index + preferPeriodMark.length], preferPeriodMark)
+                }));
             } else {
-                fix = fixer.replaceTextRange([lastIndex + 1, lastIndex + 1], periodMark);
+                // 句点を忘れているパターン
+                if (forceAppendPeriod) {
+                    // `forceAppendPeriod`のオプションがtrueならば、自動で句点を追加する。
+                    report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                        index: index,
+                        fix: fixer.replaceTextRange([index + 1, index + 1], preferPeriodMark)
+                    }));
+                } else {
+                    report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                        index: index
+                    }));
+                }
             }
-            report(lastNode, new RuleError(`文末が"${periodMark}"で終わっていません。`, {
-                index: lastIndex,
-                fix
-            }));
-
         }
     }
 };
