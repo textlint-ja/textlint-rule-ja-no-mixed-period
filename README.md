@@ -10,6 +10,11 @@ NG: これは問題ある文章です
 パラグラフの末尾に必ず句点記号を付けていることをチェックするルールです。
 
 
+## 関連ルール
+
+- [textlint-rule-period-in-list-item](https://github.com/azu/textlint-rule-period-in-list-item "textlint-rule-period-in-list-item")
+    - 箇条書き間の句点の統一ルール
+
 ## Install
 
 Install with [npm](https://www.npmjs.com/):
@@ -107,6 +112,11 @@ english only
 - これは問題ないです
 - これも問題ないです
 ```
+
+
+箇条書き間の`。`の有無の統一については次のルールを参照してください。
+
+- [textlint-rule-period-in-list-item](https://github.com/azu/textlint-rule-period-in-list-item "textlint-rule-period-in-list-item")
 
 **日本語ではない**
 
