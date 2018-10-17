@@ -38,6 +38,7 @@ const reporter = (context, options = {}) => {
         options.allowEmojiAtEnd !== undefined ? options.allowEmojiAtEnd : defaultOptions.allowEmojiAtEnd;
     const forceAppendPeriod =
         options.forceAppendPeriod !== undefined ? options.forceAppendPeriod : defaultOptions.forceAppendPeriod;
+    // [Note] Un-document option
     const checkFootnote = options.checkFootnote !== undefined ? options.checkFootnote : defaultOptions.checkFootnote;
     // 脚注のNode Typeを定義(TxtASTの定義外)
     const FootnoteNodes = [
