@@ -15,7 +15,7 @@
     "src/",
     "lib/"
   ],
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "文末の句点(。)の統一 OR 抜けをチェックするtextlintルール",
   "main": "lib/textlint-rule-ja-no-mixed-period.js",
   "directories": {
