@@ -20,7 +20,12 @@ const defaultOptions = {
     allowEmojiAtEnd: false,
     // 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
     // デフォルトでは自動的に追加しない
-    forceAppendPeriod: false
+    forceAppendPeriod: false,
+    // [Note] このオプションは標準外なので隠しオプション扱い
+    // [Warning] このオプションはsemverの範囲外なのでいつでも壊れる可能性がある
+    // 脚注はチェック対象から外すかどうか(実質Re:View向け)
+    // デフォルトでは脚注構文(Re:View)は無視する
+    checkFootnote: false
 };
 const reporter = (context, options = {}) => {
     const { Syntax, RuleError, report, fixer, getSource } = context;
@@ -29,18 +34,29 @@ const reporter = (context, options = {}) => {
     const preferPeriodMark = options.periodMark || defaultOptions.periodMark;
     // 優先する句点記号は常に句点として許可される
     const allowPeriodMarks = (options.allowPeriodMarks || defaultOptions.allowPeriodMarks).concat(preferPeriodMark);
-    const allowEmojiAtEnd = options.allowEmojiAtEnd !== undefined
-        ? options.allowEmojiAtEnd
-        : defaultOptions.allowEmojiAtEnd;
-    const forceAppendPeriod = options.forceAppendPeriod !== undefined
-        ? options.forceAppendPeriod
-        : defaultOptions.forceAppendPeriod;
-
-    const ignoredNodeTypes = [
-        Syntax.ListItem, Syntax.Link, Syntax.Code, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis
+    const allowEmojiAtEnd =
+        options.allowEmojiAtEnd !== undefined ? options.allowEmojiAtEnd : defaultOptions.allowEmojiAtEnd;
+    const forceAppendPeriod =
+        options.forceAppendPeriod !== undefined ? options.forceAppendPeriod : defaultOptions.forceAppendPeriod;
+    const checkFootnote = options.checkFootnote !== undefined ? options.checkFootnote : defaultOptions.checkFootnote;
+    // 脚注のNode Typeを定義(TxtASTの定義外)
+    const FootnoteNodes = [
+        // https://github.com/orangain/textlint-plugin-review
+        "Footnote",
+        // https://github.com/textlint/textlint/blob/master/packages/%40textlint/markdown-to-ast/src/mapping/markdown-syntax-map.js
+        // 実際にはmarkdown-to-astではこれはParagraphを含まないInlineNodeなのであまり意味はない
+        "Definition"
     ];
+    const ignoredNodeTypes = [
+        Syntax.ListItem,
+        Syntax.Link,
+        Syntax.Code,
+        Syntax.Image,
+        Syntax.BlockQuote,
+        Syntax.Emphasis
+    ].concat(checkFootnote ? FootnoteNodes : []);
     return {
-        [Syntax.Paragraph](node){
+        [Syntax.Paragraph](node) {
             if (helper.isChildNode(node, ignoredNodeTypes)) {
                 return;
             }
@@ -66,35 +82,47 @@ const reporter = (context, options = {}) => {
             }
             // 文末がスペースである場合はスペースを削除する
             if (/\s/.test(periodMark)) {
-                report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
-                    index,
-                    fix: fixer.replaceTextRange([index, index + periodMark.length], "")
-                }));
-                return
+                report(
+                    lastNode,
+                    new RuleError(`文末が"${preferPeriodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
+                        index,
+                        fix: fixer.replaceTextRange([index, index + periodMark.length], "")
+                    })
+                );
+                return;
             }
             // 典型的なパターンは自動的に`preferPeriodMark`に置き換える
             // 例) "." であるなら "。"に変換
             if (classicPeriodMarkPattern.test(periodMark)) {
-                report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                    index: index,
-                    fix: fixer.replaceTextRange([index, index + preferPeriodMark.length], preferPeriodMark)
-                }));
+                report(
+                    lastNode,
+                    new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                        index: index,
+                        fix: fixer.replaceTextRange([index, index + preferPeriodMark.length], preferPeriodMark)
+                    })
+                );
             } else {
                 // 句点を忘れているパターン
                 if (forceAppendPeriod) {
                     // `forceAppendPeriod`のオプションがtrueならば、自動で句点を追加する。
-                    report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                        index: index,
-                        fix: fixer.replaceTextRange([index + 1, index + 1], preferPeriodMark)
-                    }));
+                    report(
+                        lastNode,
+                        new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                            index: index,
+                            fix: fixer.replaceTextRange([index + 1, index + 1], preferPeriodMark)
+                        })
+                    );
                 } else {
-                    report(lastNode, new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                        index: index
-                    }));
+                    report(
+                        lastNode,
+                        new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
+                            index: index
+                        })
+                    );
                 }
             }
         }
-    }
+    };
 };
 
 module.exports = {
