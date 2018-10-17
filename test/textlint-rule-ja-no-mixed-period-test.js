@@ -1,6 +1,33 @@
-const TextLintTester = require("textlint-tester");
-const tester = new TextLintTester();
 import rule from "../src/textlint-rule-ja-no-mixed-period";
+
+const TextLintTester = require("textlint-tester");
+const reviewPlugin = require("textlint-plugin-review");
+const tester = new TextLintTester();
+tester.run("Re:view + textlint-rule-ja-no-mixed-period", {
+    plugins: [
+        {
+            pluginId: "review",
+            plugin: reviewPlugin
+        }
+    ],
+    rules: [
+        {
+            ruleId: "ja-no-mixed-period",
+            rule: rule,
+            options: {
+                checkFootnote: true
+            }
+        },
+    ]
+}, {
+    valid: [
+        {
+            text: `//footnote[test][脚注はデフォルトで無視される]`,
+            ext: ".re"
+        }
+    ]
+});
+
 tester.run("textlint-rule-ja-no-mixed-period", rule, {
     valid: [
         "これは問題ないです。",
@@ -39,7 +66,15 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
             options: {
                 allowPeriodMarks: [":"]
             },
+        },
+        // 脚注はMarkdownでは常に無視される
+        {
+            text: `テストです。[^1]
+            
+[^1]: 脚注はデフォルトで無視される`,
+            ext: ".md"
         }
+
     ],
     invalid: [
         // single match
@@ -140,6 +175,6 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
                     column: 11
                 }
             ]
-        },
+        }
     ]
 });

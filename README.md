@@ -69,12 +69,12 @@ english only
     - 例外として許可したい文字列を設定する
     - `periodMark`に指定したものは自動的に許可リストに加わる
     - デフォルトは空 `[]`
-- `allowEmojiAtEnd`(bool):
+- `allowEmojiAtEnd`: `boolean`
     - 絵文字を末尾に置くことを許可するかどうか
-    - デフォルト: false
+    - デフォルト: `false`
 - `forceAppendPeriod`: `boolean`
     - 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
-    - デフォルト: false
+    - デフォルト: `false`
 
 ```json
 {
