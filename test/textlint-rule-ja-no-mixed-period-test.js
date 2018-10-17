@@ -3,30 +3,34 @@ import rule from "../src/textlint-rule-ja-no-mixed-period";
 const TextLintTester = require("textlint-tester");
 const reviewPlugin = require("textlint-plugin-review");
 const tester = new TextLintTester();
-tester.run("Re:view + textlint-rule-ja-no-mixed-period", {
-    plugins: [
-        {
-            pluginId: "review",
-            plugin: reviewPlugin
-        }
-    ],
-    rules: [
-        {
-            ruleId: "ja-no-mixed-period",
-            rule: rule,
-            options: {
-                checkFootnote: true
+tester.run(
+    "Re:view + textlint-rule-ja-no-mixed-period",
+    {
+        plugins: [
+            {
+                pluginId: "review",
+                plugin: reviewPlugin
             }
-        },
-    ]
-}, {
-    valid: [
-        {
-            text: `//footnote[test][脚注はデフォルトで無視される]`,
-            ext: ".re"
-        }
-    ]
-});
+        ],
+        rules: [
+            {
+                ruleId: "ja-no-mixed-period",
+                rule: rule,
+                options: {
+                    checkFootnote: true
+                }
+            }
+        ]
+    },
+    {
+        valid: [
+            {
+                text: `//footnote[test][脚注はデフォルトで無視される]`,
+                ext: ".re"
+            }
+        ]
+    }
+);
 
 tester.run("textlint-rule-ja-no-mixed-period", rule, {
     valid: [
@@ -49,13 +53,13 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
             text: "絵文字が末尾にある。😆",
             options: {
                 allowEmojiAtEnd: true
-            },
+            }
         },
         {
             text: "これはOK",
             options: {
                 allowPeriodMarks: ["OK"]
-            },
+            }
         },
         {
             text: `次のコード:
@@ -65,7 +69,7 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
 `,
             options: {
                 allowPeriodMarks: [":"]
-            },
+            }
         },
         // 脚注はMarkdownでは常に無視される
         {
@@ -74,7 +78,6 @@ tester.run("textlint-rule-ja-no-mixed-period", rule, {
 [^1]: 脚注はデフォルトで無視される`,
             ext: ".md"
         }
-
     ],
     invalid: [
         // single match

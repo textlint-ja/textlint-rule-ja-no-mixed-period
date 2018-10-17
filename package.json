@@ -25,18 +25,38 @@
     "test": "textlint-scripts test",
     "build": "textlint-scripts build",
     "watch": "textlint-scripts build --watch",
-    "prepublish": "npm run --if-present build"
+    "prepublish": "npm run --if-present build",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\""
   },
   "keywords": [
     "textlint",
     "textlintrule"
   ],
   "devDependencies": {
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.8.1",
     "textlint-plugin-review": "^0.3.3",
     "textlint-scripts": "^2.1.0"
   },
   "dependencies": {
     "check-ends-with-period": "^1.0.1",
     "textlint-rule-helper": "^2.0.0"
+  },
+  "prettier": {
+    "singleQuote": false,
+    "printWidth": 120,
+    "tabWidth": 4
+  },
+  "husky": {
+    "hooks": {
+      "precommit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
