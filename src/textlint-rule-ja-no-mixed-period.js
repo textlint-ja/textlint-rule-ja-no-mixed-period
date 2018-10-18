@@ -55,7 +55,7 @@ const reporter = (context, options = {}) => {
         Syntax.Image,
         Syntax.BlockQuote,
         Syntax.Emphasis
-    ].concat(checkFootnote ? FootnoteNodes : []);
+    ].concat(checkFootnote ? [] : FootnoteNodes);
     return {
         [Syntax.Paragraph](node) {
             if (helper.isChildNode(node, ignoredNodeTypes)) {
