@@ -26,37 +26,32 @@
     "build": "textlint-scripts build",
     "watch": "textlint-scripts build --watch",
     "prepublish": "npm run --if-present build",
-    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\""
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "prepare": "git config --local core.hooksPath .githooks"
   },
   "keywords": [
     "textlint",
     "textlintrule"
   ],
   "devDependencies": {
-    "husky": "^1.1.2",
-    "lint-staged": "^7.3.0",
-    "prettier": "^1.8.1",
-    "textlint-plugin-review": "^0.3.3",
-    "textlint-scripts": "^2.1.0"
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.1",
+    "textlint-plugin-review": "^0.4.1",
+    "textlint-scripts": "^12.2.4"
   },
   "dependencies": {
     "check-ends-with-period": "^1.0.1",
-    "textlint-rule-helper": "^2.0.0"
+    "textlint-rule-helper": "^2.2.3"
   },
   "prettier": {
     "singleQuote": false,
     "printWidth": 120,
-    "tabWidth": 4
-  },
-  "husky": {
-    "hooks": {
-      "precommit": "lint-staged"
-    }
+    "tabWidth": 4,
+    "trailingComma": "none"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

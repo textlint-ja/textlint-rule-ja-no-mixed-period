@@ -1,4 +1,4 @@
-# textlint-rule-ja-no-mixed-period [![Build Status](https://travis-ci.org/textlint-ja/textlint-rule-ja-no-mixed-period.svg?branch=master)](https://travis-ci.org/textlint-ja/textlint-rule-ja-no-mixed-period) [![Gitter](https://badges.gitter.im/textlint-ja/textlint-ja.svg)](https://gitter.im/textlint-ja/textlint-ja?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# textlint-rule-ja-no-mixed-period [![Actions Status: test](https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period/workflows/test/badge.svg)](https://github.com/textlint-ja/textlint-rule-ja-no-mixed-period/actions?query=workflow%3A"test")
 
 
 文末の句点(。)の統一 OR 抜けをチェックするtextlintルール
