@@ -64,11 +64,6 @@ const reporter = (context, options = {}) => {
                 return;
             }
             const lastNode = node.children[node.children.length - 1];
-            console.log({
-                node,
-                parent: node.parent,
-                lastNode
-            });
             if (lastNode === undefined || lastNode.type !== Syntax.Str) {
                 return;
             }
