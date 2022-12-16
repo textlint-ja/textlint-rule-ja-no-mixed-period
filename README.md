@@ -75,8 +75,11 @@ english only
 - `forceAppendPeriod`: `boolean`
     - 句点で終わって無い場合に`periodMark`を--fix時に追加するかどうか
     - デフォルト: `false`
+- `checkFootnote`: `boolean`
+    - 脚注をチェックするかどうか
+    - デフォルト: `false`
 
-```json
+```json5
 {
     "rules": {
         "ja-no-mixed-period": {

@@ -1,7 +1,8 @@
 // LICENSE : MIT
 "use strict";
 const RuleHelper = require("textlint-rule-helper").RuleHelper;
-const japaneseRegExp = /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
+const japaneseRegExp =
+    /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
 /***
  * 典型的な句点のパターン
  * これは`periodMark`と交換しても違和感がないものを登録
@@ -46,7 +47,8 @@ const reporter = (context, options = {}) => {
         "Footnote",
         // https://github.com/textlint/textlint/blob/master/packages/%40textlint/markdown-to-ast/src/mapping/markdown-syntax-map.js
         // 実際にはmarkdown-to-astではこれはParagraphを含まないInlineNodeなのであまり意味はない
-        "Definition"
+        "Definition",
+        "footnoteDefinition" // micromark
     ];
     const ignoredNodeTypes = [
         Syntax.ListItem,
@@ -62,6 +64,11 @@ const reporter = (context, options = {}) => {
                 return;
             }
             const lastNode = node.children[node.children.length - 1];
+            console.log({
+                node,
+                parent: node.parent,
+                lastNode
+            });
             if (lastNode === undefined || lastNode.type !== Syntax.Str) {
                 return;
             }
