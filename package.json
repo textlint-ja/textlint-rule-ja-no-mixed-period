@@ -35,14 +35,14 @@
   ],
   "devDependencies": {
     "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.3",
     "textlint-plugin-review": "^0.4.1",
-    "textlint-scripts": "^12.2.4",
-    "textlint-tester": "^12.2.4"
+    "textlint-scripts": "^12.5.0",
+    "textlint-tester": "^12.5.0"
   },
   "dependencies": {
-    "check-ends-with-period": "^1.0.1",
-    "textlint-rule-helper": "^2.2.3"
+    "check-ends-with-period": "^3.0.0",
+    "textlint-rule-helper": "^2.2.4"
   },
   "prettier": {
     "singleQuote": false,
