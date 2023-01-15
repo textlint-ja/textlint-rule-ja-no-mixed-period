@@ -1,6 +1,8 @@
 // LICENSE : MIT
 "use strict";
-const RuleHelper = require("textlint-rule-helper").RuleHelper;
+import { checkEndsWithPeriod } from "check-ends-with-period";
+import { RuleHelper } from "textlint-rule-helper";
+
 const japaneseRegExp =
     /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
 /***
@@ -9,7 +11,7 @@ const japaneseRegExp =
  * @type {RegExp}
  */
 const classicPeriodMarkPattern = /[。\.]/;
-const checkEndsWithPeriod = require("check-ends-with-period");
+
 const defaultOptions = {
     // 優先する句点文字
     periodMark: "。",
@@ -128,7 +130,7 @@ const reporter = (context, options = {}) => {
     };
 };
 
-module.exports = {
+export default {
     linter: reporter,
     fixer: reporter
 };
