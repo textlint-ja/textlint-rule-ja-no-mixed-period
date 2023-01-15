@@ -1,5 +1,6 @@
 import rule from "../src/textlint-rule-ja-no-mixed-period";
 import TextLintTester from "textlint-tester";
+// @ts-ignore
 import reviewPlugin from "textlint-plugin-review";
 const tester = new TextLintTester();
 tester.run(

@@ -2,6 +2,7 @@
 "use strict";
 import { checkEndsWithPeriod } from "check-ends-with-period";
 import { RuleHelper } from "textlint-rule-helper";
+import type { TextlintRuleReporter } from "@textlint/types";
 
 const japaneseRegExp =
     /(?:[々〇〻\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF]|[ぁ-んァ-ヶ])/;
@@ -30,7 +31,15 @@ const defaultOptions = {
     // デフォルトでは脚注構文(Re:View)は無視する
     checkFootnote: false
 };
-const reporter = (context, options = {}) => {
+export type Options = {
+    // 優先する句点文字
+    periodMark?: string;
+    allowPeriodMarks?: string[];
+    allowEmojiAtEnd?: boolean;
+    forceAppendPeriod?: boolean;
+    checkFootnote?: boolean;
+};
+const reporter: TextlintRuleReporter<Options> = (context, options = {}) => {
     const { Syntax, RuleError, report, fixer, getSource } = context;
     const helper = new RuleHelper(context);
     // 優先する句点記号
@@ -52,14 +61,16 @@ const reporter = (context, options = {}) => {
         "Definition",
         "footnoteDefinition" // micromark
     ];
-    const ignoredNodeTypes = [
+    const defaultIgnoredNodeTypes = [
         Syntax.ListItem,
         Syntax.Link,
         Syntax.Code,
         Syntax.Image,
         Syntax.BlockQuote,
         Syntax.Emphasis
-    ].concat(checkFootnote ? [] : FootnoteNodes);
+    ];
+    // @ts-expect-error: FootnoteNodes is not defined in textlint types
+    const ignoredNodeTypes = defaultIgnoredNodeTypes.concat(checkFootnote ? [] : FootnoteNodes);
     return {
         [Syntax.Paragraph](node) {
             if (helper.isChildNode(node, ignoredNodeTypes)) {
