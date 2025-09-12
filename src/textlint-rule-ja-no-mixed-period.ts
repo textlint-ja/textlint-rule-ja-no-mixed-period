@@ -100,10 +100,15 @@ const reporter: TextlintRuleReporter<Options> = (context, options = {}) => {
             if (/\s/.test(periodMark)) {
                 report(
                     lastNode,
-                    new RuleError(`文末が"${preferPeriodMark}"で終わっていません。末尾に不要なスペースがあります。`, {
-                        index,
-                        fix: fixer.replaceTextRange([index, index + periodMark.length], "")
-                    })
+                    new RuleError(
+                        `文末が"${preferPeriodMark}"で終わっていません。
+理由: 末尾の不要な空白が句点の代わりになっていません
+修正: 空白を削除してください`,
+                        {
+                            index,
+                            fix: fixer.replaceTextRange([index, index + periodMark.length], "")
+                        }
+                    )
                 );
                 return;
             }
@@ -112,10 +117,15 @@ const reporter: TextlintRuleReporter<Options> = (context, options = {}) => {
             if (classicPeriodMarkPattern.test(periodMark)) {
                 report(
                     lastNode,
-                    new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                        index: index,
-                        fix: fixer.replaceTextRange([index, index + preferPeriodMark.length], preferPeriodMark)
-                    })
+                    new RuleError(
+                        `文末が"${preferPeriodMark}"で終わっていません。
+理由: 日本語文章では"${preferPeriodMark}"を使用します
+修正: "${periodMark}"を"${preferPeriodMark}"に置き換えてください`,
+                        {
+                            index: index,
+                            fix: fixer.replaceTextRange([index, index + preferPeriodMark.length], preferPeriodMark)
+                        }
+                    )
                 );
             } else {
                 // 句点を忘れているパターン
@@ -123,17 +133,29 @@ const reporter: TextlintRuleReporter<Options> = (context, options = {}) => {
                     // `forceAppendPeriod`のオプションがtrueならば、自動で句点を追加する。
                     report(
                         lastNode,
-                        new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                            index: index,
-                            fix: fixer.replaceTextRange([index + 1, index + 1], preferPeriodMark)
-                        })
+                        new RuleError(
+                            `文末が"${preferPeriodMark}"で終わっていません。
+理由: 句点は文の境界を明確にし、読み手の理解を助けます
+修正: 適切な文末表現で文を完結させ、句点を追加してください
+例: 「〜です${preferPeriodMark}」「〜ます${preferPeriodMark}」「〜でした${preferPeriodMark}」など`,
+                            {
+                                index: index,
+                                fix: fixer.replaceTextRange([index + 1, index + 1], preferPeriodMark)
+                            }
+                        )
                     );
                 } else {
                     report(
                         lastNode,
-                        new RuleError(`文末が"${preferPeriodMark}"で終わっていません。`, {
-                            index: index
-                        })
+                        new RuleError(
+                            `文末が"${preferPeriodMark}"で終わっていません。
+理由: 句点は文の境界を明確にし、読み手の理解を助けます
+修正: 適切な文末表現で文を完結させ、句点を追加してください
+例: 「〜です${preferPeriodMark}」「〜ます${preferPeriodMark}」「〜でした${preferPeriodMark}」など`,
+                            {
+                                index: index
+                            }
+                        )
                     );
                 }
             }
